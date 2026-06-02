@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>予約管理</title>
+  <link rel="stylesheet" th:href="@{/admin/admin.css}">
+</head>
+<body>
+<header th:replace="~{admin/fragments :: header}"></header>
+<main class="page">
+  <h1>予約管理</h1>
+
+  <form class="toolbar" th:action="@{/admin/reservations}" method="get" th:object="${condition}">
+    <label>日付<input type="date" th:field="*{date}"></label>
+    <label>ステータス
+      <select th:field="*{status}">
+        <option value="">すべて</option>
+        <option th:each="status : ${reservationStatuses}" th:value="${status}" th:text="${status.label}">status</option>
+      </select>
+    </label>
+    <label>氏名・メール・予約番号<input type="search" th:field="*{keyword}"></label>
+    <button type="submit">検索</button>
+    <a class="button secondary" th:href="@{/admin/reservations/csv(date=${condition.date},status=${condition.status},keyword=${condition.keyword})}">CSV出力</a>
+  </form>
+
+  <section class="panel">
+    <div class="panel-body">
+      <table>
+        <thead>
+        <tr><th>予約番号</th><th>日時</th><th>人数</th><th>氏名</th><th>メール</th><th>金額</th><th>状態</th><th></th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="reservation : ${reservations}">
+          <td th:text="${reservation.reservationCode}">code</td>
+          <td th:text="${reservation.reservationDate} + ' ' + ${#temporals.format(reservation.reservationTime, 'HH:mm')}">date</td>
+          <td th:text="${reservation.reservationCount}">0</td>
+          <td th:text="${reservation.customerName()}">name</td>
+          <td th:text="${reservation.customerEmail}">mail</td>
+          <td th:text="${reservation.totalAmount} + '円'">0円</td>
+          <td><span class="badge" th:text="${reservation.status.label}">status</span></td>
+          <td><a th:href="@{/admin/reservations/{id}(id=${reservation.id})}">詳細</a></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(reservations)}"><td colspan="8" class="muted">予約はありません。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+</body>
+</html>

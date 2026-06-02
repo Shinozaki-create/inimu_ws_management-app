@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ダッシュボード</title>
+  <link rel="stylesheet" th:href="@{/admin/admin.css}">
+</head>
+<body>
+<header th:replace="~{admin/fragments :: header}"></header>
+<main class="page">
+  <h1>ダッシュボード</h1>
+
+  <section class="metrics" aria-label="集計">
+    <div class="metric"><span>本日の予約件数</span><strong th:text="${todayReservationCount}">0</strong></div>
+    <div class="metric"><span>今月の予約件数</span><strong th:text="${monthReservationCount}">0</strong></div>
+    <div class="metric"><span>今月の売上</span><strong th:text="${monthSales.totalAmount()} + '円'">0円</strong></div>
+    <div class="metric"><span>未対応問い合わせ</span><strong th:text="${openInquiryCount}">0</strong></div>
+  </section>
+
+  <div class="two-column">
+    <section class="panel">
+      <div class="panel-heading"><h2>直近の予約</h2></div>
+      <div class="panel-body">
+        <table>
+          <thead><tr><th>予約番号</th><th>日時</th><th>氏名</th><th>状態</th></tr></thead>
+          <tbody>
+          <tr th:each="reservation : ${recentReservations}">
+            <td><a th:href="@{/admin/reservations/{id}(id=${reservation.id})}" th:text="${reservation.reservationCode}">code</a></td>
+            <td th:text="${reservation.reservationDate} + ' ' + ${#temporals.format(reservation.reservationTime, 'HH:mm')}">date</td>
+            <td th:text="${reservation.customerName()}">name</td>
+            <td><span class="badge" th:text="${reservation.status.label}">status</span></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(recentReservations)}"><td colspan="4" class="muted">予約はありません。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading"><h2>空席が少ない開催枠</h2></div>
+      <div class="panel-body">
+        <table>
+          <thead><tr><th>日時</th><th>残席</th></tr></thead>
+          <tbody>
+          <tr th:each="slot : ${lowSlots}">
+            <td th:text="${slot.schedule.scheduleDate} + ' ' + ${#temporals.format(slot.startTime, 'HH:mm')}">date</td>
+            <td th:text="${slot.remainingCount()}">0</td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(lowSlots)}"><td colspan="2" class="muted">該当する開催枠はありません。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+</body>
+</html>
