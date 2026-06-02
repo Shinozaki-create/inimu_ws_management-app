@@ -9,6 +9,7 @@ import com.example.inimuws.dto.TimeSlotUpdateRequest;
 import com.example.inimuws.entity.WorkshopSchedule;
 import com.example.inimuws.entity.WorkshopTimeSlot;
 import com.example.inimuws.exception.BusinessException;
+import java.time.YearMonth;
 import com.example.inimuws.repository.WorkshopScheduleRepository;
 import com.example.inimuws.repository.WorkshopTimeSlotRepository;
 import java.util.List;
@@ -40,6 +41,14 @@ public class ScheduleService {
     @Transactional(readOnly = true)
     public List<WorkshopSchedule> findAllSchedules() {
         return scheduleRepository.findAllByOrderByScheduleDateAsc();
+    }
+
+    @Transactional(readOnly = true)
+    public List<WorkshopSchedule> findSchedulesForMonth(YearMonth month) {
+        return scheduleRepository.findAllByScheduleDateBetweenOrderByScheduleDateAsc(
+                month.atDay(1),
+                month.atEndOfMonth()
+        );
     }
 
     @Transactional(readOnly = true)

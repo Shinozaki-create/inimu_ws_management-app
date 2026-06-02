@@ -142,8 +142,23 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
+    public long countReservationsForMonth(YearMonth month) {
+        return reservationRepository.countByReservationDateBetween(month.atDay(1), month.atEndOfMonth());
+    }
+
+    @Transactional(readOnly = true)
     public List<Reservation> findRecentReservations() {
         return reservationRepository.findTop10ByOrderByCreatedAtDesc();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reservation> findReservationsForMonth(YearMonth month, int limit) {
+        return reservationRepository.findByReservationDateBetweenOrderByReservationDateAscReservationTimeAsc(
+                        month.atDay(1),
+                        month.atEndOfMonth()
+                ).stream()
+                .limit(limit)
+                .toList();
     }
 
     private Specification<Reservation> buildSpecification(AdminReservationSearchCondition condition) {

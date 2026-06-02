@@ -49,6 +49,7 @@ class ReservationServiceTest {
 
     @Test
     void createsInquiryWhenInquiryOnlyIsTrue() {
+        long beforeCount = inquiryRepository.count();
         ReservationRequest request = commonRequest();
         request.setInquiryOnly(true);
         request.setCustomerMessage("開催内容について質問があります");
@@ -56,7 +57,7 @@ class ReservationServiceTest {
         ReservationResponse response = reservationService.createReservationOrInquiry(request);
 
         assertThat(response.type()).isEqualTo("inquiry");
-        assertThat(inquiryRepository.findAll()).hasSize(1);
+        assertThat(inquiryRepository.count()).isEqualTo(beforeCount + 1);
     }
 
     @Test

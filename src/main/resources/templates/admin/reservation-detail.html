@@ -24,7 +24,7 @@
           <tr><th>メール</th><td th:text="${reservation.customerEmail}">mail</td></tr>
           <tr><th>電話</th><td th:text="${reservation.customerTel}">tel</td></tr>
           <tr><th>メッセージ</th><td th:text="${reservation.customerMessage}">message</td></tr>
-          <tr><th>状態</th><td><span class="badge" th:text="${reservation.status.label}">status</span></td></tr>
+          <tr><th>状態</th><td><span class="badge" th:attr="data-status=${reservation.status.name()}" th:text="${reservation.status.label}">status</span></td></tr>
           </tbody>
         </table>
       </div>

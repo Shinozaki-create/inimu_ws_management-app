@@ -21,7 +21,7 @@
           <tr><th>メール</th><td th:text="${inquiry.customerEmail}">mail</td></tr>
           <tr><th>電話</th><td th:text="${inquiry.customerTel}">tel</td></tr>
           <tr><th>内容</th><td th:text="${inquiry.customerMessage}">message</td></tr>
-          <tr><th>状態</th><td><span class="badge" th:text="${inquiry.status.label}">status</span></td></tr>
+          <tr><th>状態</th><td><span class="badge" th:attr="data-status=${inquiry.status.name()}" th:text="${inquiry.status.label}">status</span></td></tr>
           </tbody>
         </table>
       </div>

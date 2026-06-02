@@ -2,16 +2,33 @@
   box-sizing: border-box;
 }
 
+:root {
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --surface-soft: #fafafa;
+  --surface-hover: #f1f5f9;
+  --text: #1f2937;
+  --text-strong: #111827;
+  --muted: #6b7280;
+  --muted-light: #9ca3af;
+  --border: #e5e7eb;
+  --border-soft: #eef0f3;
+  --accent: #0f1f3a;
+  --accent-hover: #1e3a5f;
+  --shadow-soft: none;
+  --shadow-panel: none;
+}
+
 body {
   margin: 0;
-  background: #f6f7f8;
-  color: #202428;
+  background: var(--bg);
+  color: var(--text);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.5;
 }
 
 a {
-  color: #0b6bcb;
+  color: var(--accent-hover);
   text-decoration: none;
 }
 
@@ -33,15 +50,15 @@ a:hover {
 
 .login-panel {
   max-width: 400px;
-  background: #fff;
-  border: 1px solid #dce1e6;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 28px;
+  padding: 32px;
 }
 
 .admin-header {
-  background: #fff;
-  border-bottom: 1px solid #dce1e6;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
 }
 
 .admin-header-inner {
@@ -55,8 +72,11 @@ a:hover {
 }
 
 .brand {
-  color: #202428;
+  color: var(--text-strong);
+  display: inline-flex;
+  font-size: 18px;
   font-weight: 700;
+  letter-spacing: 0;
 }
 
 .nav {
@@ -66,65 +86,102 @@ a:hover {
   gap: 12px;
 }
 
+.nav-button {
+  align-items: center;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #334155;
+  display: inline-flex;
+  font-weight: 600;
+  justify-content: center;
+  min-height: 40px;
+  padding: 9px 14px;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.nav-button:hover,
+.nav-button:focus-visible {
+  background: var(--surface-hover);
+  border-color: #d8dee7;
+  color: var(--accent);
+  text-decoration: none;
+}
+
 .page {
-  margin: 24px auto 48px;
+  margin: 0 auto 48px;
+  padding: 32px 0 48px;
+}
+
+.page > h1 {
+  color: var(--text-strong);
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 22px;
 }
 
 .toolbar {
   align-items: end;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin: 18px 0;
+  gap: 14px;
+  margin: 18px 0 22px;
+  padding: 16px;
 }
 
 .metrics {
   display: grid;
-  gap: 12px;
+  gap: 16px;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  margin: 18px 0 24px;
+  margin: 18px 0 26px;
 }
 
 .metric,
 .panel {
-  background: #fff;
-  border: 1px solid #dce1e6;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 
 .metric {
-  padding: 16px;
+  padding: 20px;
 }
 
 .metric span {
-  color: #66707a;
+  color: var(--muted);
   display: block;
   font-size: 13px;
 }
 
 .metric strong {
+  color: var(--text-strong);
   display: block;
-  font-size: 26px;
-  margin-top: 4px;
+  font-size: 30px;
+  margin-top: 6px;
 }
 
 .panel {
-  margin: 18px 0;
+  margin: 20px 0;
   overflow: hidden;
 }
 
 .panel-heading {
-  border-bottom: 1px solid #dce1e6;
-  padding: 14px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 16px 18px;
 }
 
 .panel-heading h2 {
+  color: var(--text-strong);
   font-size: 18px;
   margin: 0;
 }
 
 .panel-body {
-  padding: 16px;
+  padding: 18px;
 }
 
 table {
@@ -134,20 +191,25 @@ table {
 
 th,
 td {
-  border-bottom: 1px solid #e7ebef;
-  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  padding: 13px 14px;
   text-align: left;
   vertical-align: top;
 }
 
 th {
-  color: #66707a;
+  background: #f8fafc;
+  color: var(--muted);
   font-size: 13px;
   font-weight: 600;
 }
 
+tbody tr:hover {
+  background: #fbfcfe;
+}
+
 label {
-  color: #38404a;
+  color: #374151;
   display: grid;
   font-size: 13px;
   gap: 4px;
@@ -156,11 +218,21 @@ label {
 input,
 select,
 textarea {
-  border: 1px solid #bcc7d1;
-  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid #d6dde6;
+  border-radius: 8px;
   font: inherit;
-  min-height: 38px;
-  padding: 8px 10px;
+  min-height: 40px;
+  padding: 9px 11px;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent-hover);
+  box-shadow: none;
+  outline: none;
 }
 
 textarea {
@@ -170,22 +242,39 @@ textarea {
 
 button,
 .button {
-  background: #202428;
-  border: 1px solid #202428;
-  border-radius: 6px;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
   color: #fff;
   cursor: pointer;
   display: inline-flex;
   font: inherit;
   justify-content: center;
-  min-height: 38px;
-  padding: 8px 14px;
+  min-height: 40px;
+  padding: 9px 16px;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+button:hover,
+.button:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #fff;
+  text-decoration: none;
 }
 
 .button.secondary,
 button.secondary {
-  background: #fff;
-  color: #202428;
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--accent);
+}
+
+.button.secondary:hover,
+button.secondary:hover {
+  background: var(--surface-hover);
+  border-color: #d8dee7;
+  color: var(--accent);
 }
 
 .inline-form {
@@ -202,21 +291,278 @@ button.secondary {
 
 .two-column {
   display: grid;
-  gap: 18px;
+  gap: 22px;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
 }
 
 .badge {
-  background: #e8f2ff;
+  background: #eef2f7;
   border-radius: 999px;
-  color: #0b5394;
+  color: #475569;
   display: inline-block;
   font-size: 12px;
+  font-weight: 600;
   padding: 2px 8px;
 }
 
+.badge-success {
+  background: #e8f7ee;
+  color: #16803c;
+}
+
+.badge-danger {
+  background: #fdecec;
+  color: #d14343;
+}
+
+.badge-pending {
+  background: #f6f2e8;
+  color: #8a6a18;
+}
+
+.badge-muted {
+  background: #eef2f7;
+  color: #475569;
+}
+
 .muted {
-  color: #66707a;
+  color: var(--muted);
+}
+
+.dashboard-monthbar {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin: -6px 0 24px;
+}
+
+.dashboard-month-label {
+  color: var(--text-strong);
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  min-width: 116px;
+  text-align: center;
+}
+
+.month-nav-button {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--accent);
+  display: inline-flex;
+  font-size: 16px;
+  font-weight: 700;
+  height: 36px;
+  justify-content: center;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+  width: 36px;
+}
+
+.month-nav-button:hover,
+.month-nav-button:focus-visible {
+  background: var(--surface-hover);
+  border-color: #d8dee7;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.metric {
+  min-height: 144px;
+  padding: 22px;
+}
+
+.metric strong {
+  font-size: 32px;
+  line-height: 1.1;
+}
+
+.metric-trend,
+.metric-note {
+  font-size: 13px;
+  margin: 10px 0 0;
+}
+
+.metric-trend {
+  color: var(--muted);
+}
+
+.metric-note {
+  color: var(--muted-light);
+}
+
+.trend-positive {
+  color: #16803c;
+}
+
+.trend-negative {
+  color: #d14343;
+}
+
+.trend-neutral {
+  color: var(--muted);
+}
+
+.dashboard-layout {
+  align-items: start;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(0, 1.65fr) minmax(320px, 1fr);
+}
+
+.dashboard-layout .panel {
+  margin: 0;
+}
+
+.calendar-panel .panel-body {
+  padding-top: 14px;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.calendar-weekdays {
+  margin-bottom: 10px;
+}
+
+.calendar-weekdays span {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.calendar-day {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: flex-start;
+  min-height: 82px;
+  padding: 10px 8px;
+}
+
+.calendar-day.is-outside {
+  background: var(--surface-soft);
+  border-color: var(--border-soft);
+}
+
+.calendar-day.is-scheduled {
+  background: #f8fbff;
+  border-color: #d8e3ef;
+}
+
+.calendar-day.is-paused {
+  background: #fafafa;
+}
+
+.calendar-day-number {
+  color: var(--text-strong);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.calendar-day.is-outside .calendar-day-number {
+  color: var(--muted-light);
+}
+
+.calendar-day-label {
+  align-self: flex-start;
+  background: #eef3f9;
+  border-radius: 999px;
+  color: #334155;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 5px 8px;
+}
+
+.calendar-day.is-paused .calendar-day-label {
+  background: #f3f4f6;
+  color: var(--muted);
+}
+
+.badge {
+  border: 1px solid transparent;
+  font-weight: 700;
+  padding: 4px 10px;
+}
+
+.badge[data-status="CONFIRMED"],
+.badge[data-status="COMPLETED"] {
+  background: #e8f7ee;
+  color: #16803c;
+}
+
+.badge[data-status="CANCELLED"],
+.badge[data-status="CLOSED"] {
+  background: #fdecec;
+  color: #d14343;
+}
+
+.badge[data-status="PENDING"],
+.badge[data-status="OPEN"],
+.badge[data-status="IN_PROGRESS"],
+.badge[data-status="NO_SHOW"] {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+@media (min-width: 901px) {
+  body:not(.login-body) {
+    padding-left: 248px;
+  }
+
+  .admin-header {
+    border-bottom: 0;
+    border-right: 1px solid var(--border);
+    inset: 0 auto 0 0;
+    position: fixed;
+    width: 248px;
+    z-index: 10;
+  }
+
+  .admin-header-inner {
+    align-items: stretch;
+    flex-direction: column;
+    justify-content: flex-start;
+    max-width: none;
+    min-height: 100vh;
+    padding: 24px 18px;
+  }
+
+  .brand {
+    padding: 4px 4px 18px;
+  }
+
+  .nav {
+    align-items: stretch;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-top: 4px;
+    min-height: calc(100vh - 92px);
+  }
+
+  .nav-button {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .nav form {
+    margin-top: auto;
+  }
+
+  .nav form button {
+    width: 100%;
+  }
 }
 
 @media (max-width: 760px) {
@@ -229,8 +575,18 @@ button.secondary {
     margin-top: 12px;
   }
 
+  .page {
+    padding: 22px 0 36px;
+  }
+
   table {
     display: block;
     overflow-x: auto;
+  }
+}
+
+@media (max-width: 1100px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
   }
 }

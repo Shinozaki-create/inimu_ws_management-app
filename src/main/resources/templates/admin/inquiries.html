@@ -19,7 +19,7 @@
           <td th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">date</td>
           <td th:text="${inquiry.customerName()}">name</td>
           <td th:text="${inquiry.customerEmail}">mail</td>
-          <td><span class="badge" th:text="${inquiry.status.label}">status</span></td>
+          <td><span class="badge" th:attr="data-status=${inquiry.status.name()}" th:text="${inquiry.status.label}">status</span></td>
           <td><a th:href="@{/admin/inquiries/{id}(id=${inquiry.id})}">詳細</a></td>
         </tr>
         <tr th:if="${#lists.isEmpty(inquiries)}"><td colspan="5" class="muted">問い合わせはありません。</td></tr>

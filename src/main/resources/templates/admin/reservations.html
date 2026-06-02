@@ -38,7 +38,7 @@
           <td th:text="${reservation.customerName()}">name</td>
           <td th:text="${reservation.customerEmail}">mail</td>
           <td th:text="${reservation.totalAmount} + '円'">0円</td>
-          <td><span class="badge" th:text="${reservation.status.label}">status</span></td>
+          <td><span class="badge" th:attr="data-status=${reservation.status.name()}" th:text="${reservation.status.label}">status</span></td>
           <td><a th:href="@{/admin/reservations/{id}(id=${reservation.id})}">詳細</a></td>
         </tr>
         <tr th:if="${#lists.isEmpty(reservations)}"><td colspan="8" class="muted">予約はありません。</td></tr>
