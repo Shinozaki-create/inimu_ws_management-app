@@ -49,6 +49,15 @@ public class Reservation extends TimestampedEntity {
     @Column(name = "reservation_count", nullable = false)
     private int reservationCount;
 
+    @Column(name = "participant_count")
+    private Integer participantCount;
+
+    @Column(name = "male_count")
+    private Integer maleCount;
+
+    @Column(name = "female_count")
+    private Integer femaleCount;
+
     @Column(name = "customer_family_name", nullable = false)
     private String customerFamilyName;
 
@@ -82,5 +91,37 @@ public class Reservation extends TimestampedEntity {
 
     public String customerName() {
         return customerFamilyName + " " + customerGivenName;
+    }
+
+    public String customerFamilyHiragana() {
+        return toHiragana(customerFamilyKana);
+    }
+
+    public String customerGivenHiragana() {
+        return toHiragana(customerGivenKana);
+    }
+
+    public String customerFuriganaHiragana() {
+        return customerFamilyHiragana() + " " + customerGivenHiragana();
+    }
+
+    public int effectiveParticipantCount() {
+        return participantCount != null ? participantCount : reservationCount;
+    }
+
+    private static String toHiragana(String value) {
+        if (value == null || value.isBlank()) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder(value.length());
+        for (int i = 0; i < value.length(); i++) {
+            char ch = value.charAt(i);
+            if (ch >= 'ァ' && ch <= 'ヶ') {
+                builder.append((char) (ch - 0x60));
+            } else {
+                builder.append(ch);
+            }
+        }
+        return builder.toString();
     }
 }

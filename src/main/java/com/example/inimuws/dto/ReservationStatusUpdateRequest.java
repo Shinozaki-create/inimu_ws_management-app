@@ -12,5 +12,9 @@ public class ReservationStatusUpdateRequest {
     @NotNull
     private ReservationStatus status;
 
+    private Integer participantCount;
+    private Integer maleCount;
+    private Integer femaleCount;
+
     private String adminMemo;
 }

@@ -60,4 +60,9 @@ public class InquiryService {
     public long countOpen() {
         return inquiryRepository.countByStatus(InquiryStatus.OPEN);
     }
+
+    @Transactional(readOnly = true)
+    public long countInProgress() {
+        return inquiryRepository.countByStatus(InquiryStatus.IN_PROGRESS);
+    }
 }

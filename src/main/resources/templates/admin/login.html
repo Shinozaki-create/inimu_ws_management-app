@@ -8,7 +8,7 @@
 </head>
 <body class="login-body">
 <main class="login-panel">
-  <h1>管理者ログイン</h1>
+  <h1><span th:replace="~{admin/fragments :: icon-dashboard}"></span>管理者ログイン</h1>
   <p class="muted" th:if="${param.error}">メールアドレスまたはパスワードが違います。</p>
   <p class="muted" th:if="${param.logout}">ログアウトしました。</p>
   <form class="stack" th:action="@{/admin/login}" method="post">

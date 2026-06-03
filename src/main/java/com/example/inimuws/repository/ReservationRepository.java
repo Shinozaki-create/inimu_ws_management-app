@@ -18,6 +18,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
 
     long countByReservationDateBetween(LocalDate start, LocalDate end);
 
+    long countByStatus(ReservationStatus status);
+
     boolean existsByReservationCode(String reservationCode);
 
     Optional<Reservation> findByReservationCode(String reservationCode);
@@ -40,11 +42,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     );
 
     @Query("""
-            select coalesce(sum(r.reservationCount), 0)
+            select coalesce(sum(coalesce(r.participantCount, r.reservationCount)), 0)
             from Reservation r
             where r.status in :statuses and r.reservationDate between :start and :end
             """)
-    int sumReservationCountByStatusesAndReservationDateBetween(
+    int sumParticipantCountByStatusesAndReservationDateBetween(
             @Param("statuses") Collection<ReservationStatus> statuses,
             @Param("start") LocalDate start,
             @Param("end") LocalDate end

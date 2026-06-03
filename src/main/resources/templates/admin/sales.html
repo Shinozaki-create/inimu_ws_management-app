@@ -9,7 +9,7 @@
 <body>
 <header th:replace="~{admin/fragments :: header}"></header>
 <main class="page">
-  <h1>売上管理</h1>
+  <h1><span th:replace="~{admin/fragments :: icon-sales}"></span>売上管理</h1>
 
   <form class="toolbar" th:action="@{/admin/sales}" method="get">
     <label>対象月<input type="month" name="month" th:value="${targetMonth}"></label>

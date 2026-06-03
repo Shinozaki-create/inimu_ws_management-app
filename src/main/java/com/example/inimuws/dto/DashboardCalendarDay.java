@@ -7,6 +7,7 @@ public record DashboardCalendarDay(
         boolean currentMonth,
         boolean hasSchedule,
         boolean open,
+        int reservedCount,
         String label
 ) {
 }

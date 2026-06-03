@@ -9,7 +9,7 @@
 <body>
 <header th:replace="~{admin/fragments :: header}"></header>
 <main class="page">
-  <h1>予約管理</h1>
+  <h1><span th:replace="~{admin/fragments :: icon-reservations}"></span>予約管理</h1>
 
   <form class="toolbar" th:action="@{/admin/reservations}" method="get" th:object="${condition}">
     <label>日付<input type="date" th:field="*{date}"></label>
@@ -20,28 +20,63 @@
       </select>
     </label>
     <label>氏名・メール・予約番号<input type="search" th:field="*{keyword}"></label>
+    <input type="hidden" th:field="*{sort}">
+    <input type="hidden" th:field="*{direction}">
     <button type="submit">検索</button>
-    <a class="button secondary" th:href="@{/admin/reservations/csv(date=${condition.date},status=${condition.status},keyword=${condition.keyword})}">CSV出力</a>
+    <a class="button secondary" th:href="@{/admin/reservations/csv(date=${condition.date},status=${condition.status},keyword=${condition.keyword},sort=${condition.sort},direction=${condition.direction})}">CSV出力</a>
   </form>
 
   <section class="panel">
     <div class="panel-body">
       <table>
         <thead>
-        <tr><th>予約番号</th><th>日時</th><th>人数</th><th>氏名</th><th>メール</th><th>金額</th><th>状態</th><th></th></tr>
+        <tr>
+          <th class="sortable-th">
+            <a class="sort-link" th:href="@{/admin/reservations(date=${condition.date},status=${condition.status},keyword=${condition.keyword},sort='reservationCode',direction=${condition.sort == 'reservationCode' and condition.direction == 'asc' ? 'desc' : 'asc'})}">
+              予約番号
+              <span class="sort-indicator" th:if="${condition.sort == 'reservationCode'}" th:text="${condition.direction == 'asc' ? '▲' : '▼'}">▲</span>
+            </a>
+          </th>
+          <th class="sortable-th">
+            <a class="sort-link" th:href="@{/admin/reservations(date=${condition.date},status=${condition.status},keyword=${condition.keyword},sort='reservationDate',direction=${condition.sort == 'reservationDate' and condition.direction == 'asc' ? 'desc' : 'asc'})}">
+              日付
+              <span class="sort-indicator" th:if="${condition.sort == 'reservationDate'}" th:text="${condition.direction == 'asc' ? '▲' : '▼'}">▲</span>
+            </a>
+          </th>
+          <th class="sortable-th">
+            <a class="sort-link" th:href="@{/admin/reservations(date=${condition.date},status=${condition.status},keyword=${condition.keyword},sort='reservationTime',direction=${condition.sort == 'reservationTime' and condition.direction == 'asc' ? 'desc' : 'asc'})}">
+              時間
+              <span class="sort-indicator" th:if="${condition.sort == 'reservationTime'}" th:text="${condition.direction == 'asc' ? '▲' : '▼'}">▲</span>
+            </a>
+          </th>
+          <th>人数</th>
+          <th>氏名</th>
+          <th>ふりがな</th>
+          <th>金額</th>
+          <th>管理メモ</th>
+          <th class="sortable-th">
+            <a class="sort-link" th:href="@{/admin/reservations(date=${condition.date},status=${condition.status},keyword=${condition.keyword},sort='status',direction=${condition.sort == 'status' and condition.direction == 'asc' ? 'desc' : 'asc'})}">
+              ステータス
+              <span class="sort-indicator" th:if="${condition.sort == 'status'}" th:text="${condition.direction == 'asc' ? '▲' : '▼'}">▲</span>
+            </a>
+          </th>
+          <th></th>
+        </tr>
         </thead>
         <tbody>
         <tr th:each="reservation : ${reservations}">
           <td th:text="${reservation.reservationCode}">code</td>
-          <td th:text="${reservation.reservationDate} + ' ' + ${#temporals.format(reservation.reservationTime, 'HH:mm')}">date</td>
+          <td th:text="${reservation.reservationDate}">date</td>
+          <td th:text="${#temporals.format(reservation.reservationTime, 'HH:mm')}">time</td>
           <td th:text="${reservation.reservationCount}">0</td>
           <td th:text="${reservation.customerName()}">name</td>
-          <td th:text="${reservation.customerEmail}">mail</td>
+          <td th:text="${reservation.customerFuriganaHiragana()}">kana</td>
           <td th:text="${reservation.totalAmount} + '円'">0円</td>
+          <td th:text="${reservation.adminMemo != null ? reservation.adminMemo : '-'}">memo</td>
           <td><span class="badge" th:attr="data-status=${reservation.status.name()}" th:text="${reservation.status.label}">status</span></td>
           <td><a th:href="@{/admin/reservations/{id}(id=${reservation.id})}">詳細</a></td>
         </tr>
-        <tr th:if="${#lists.isEmpty(reservations)}"><td colspan="8" class="muted">予約はありません。</td></tr>
+        <tr th:if="${#lists.isEmpty(reservations)}"><td colspan="10" class="muted">予約はありません。</td></tr>
         </tbody>
       </table>
     </div>

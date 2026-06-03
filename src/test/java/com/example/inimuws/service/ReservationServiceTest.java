@@ -41,7 +41,7 @@ class ReservationServiceTest {
         ReservationResponse response = reservationService.createReservationOrInquiry(reservationRequest(LocalTime.of(11, 0), 2));
 
         assertThat(response.type()).isEqualTo("reservation");
-        assertThat(response.reservationCode()).startsWith("WS-20260606-");
+        assertThat(response.reservationCode()).startsWith("WS-260606-");
 
         WorkshopTimeSlot slot = timeSlotRepository.findBySchedule_ScheduleDateOrderByStartTimeAsc(LocalDate.of(2026, 6, 6)).get(0);
         assertThat(slot.getReservedCount()).isEqualTo(2);
@@ -81,6 +81,26 @@ class ReservationServiceTest {
 
         WorkshopTimeSlot slot = timeSlotRepository.findBySchedule_ScheduleDateOrderByStartTimeAsc(LocalDate.of(2026, 6, 6)).get(2);
         assertThat(slot.getReservedCount()).isZero();
+    }
+
+    @Test
+    void updatingReservationStoresParticipantBreakdownAndRecalculatesAmount() {
+        ReservationResponse response = reservationService.createReservationOrInquiry(reservationRequest(LocalTime.of(11, 0), 4));
+        Reservation reservation = reservationRepository.findByReservationCode(response.reservationCode()).orElseThrow();
+
+        ReservationStatusUpdateRequest updateRequest = new ReservationStatusUpdateRequest();
+        updateRequest.setStatus(ReservationStatus.CONFIRMED);
+        updateRequest.setParticipantCount(3);
+        updateRequest.setMaleCount(1);
+        updateRequest.setFemaleCount(2);
+        updateRequest.setAdminMemo("確認済み");
+
+        Reservation updated = reservationService.updateStatus(reservation.getId(), updateRequest);
+
+        assertThat(updated.getParticipantCount()).isEqualTo(3);
+        assertThat(updated.getMaleCount()).isEqualTo(1);
+        assertThat(updated.getFemaleCount()).isEqualTo(2);
+        assertThat(updated.getTotalAmount()).isEqualTo(16500);
     }
 
     private ReservationRequest reservationRequest(LocalTime time, int count) {

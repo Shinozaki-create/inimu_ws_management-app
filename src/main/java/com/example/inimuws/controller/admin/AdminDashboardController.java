@@ -5,6 +5,7 @@ import com.example.inimuws.dto.DashboardTrend;
 import com.example.inimuws.dto.MonthlySalesSummary;
 import com.example.inimuws.entity.Reservation;
 import com.example.inimuws.entity.WorkshopSchedule;
+import com.example.inimuws.entity.WorkshopTimeSlot;
 import com.example.inimuws.service.InquiryService;
 import com.example.inimuws.service.ReservationService;
 import com.example.inimuws.service.SalesService;
@@ -47,6 +48,8 @@ public class AdminDashboardController {
         MonthlySalesSummary previousMonthSales = salesService.getMonthlySummary(previousMonth);
         long monthReservationCount = reservationService.countReservationsForMonth(targetMonth);
         long previousMonthReservationCount = reservationService.countReservationsForMonth(previousMonth);
+        long monthParticipantCount = monthSales.participantCount();
+        long previousMonthParticipantCount = previousMonthSales.participantCount();
         List<Reservation> monthReservations = reservationService.findReservationsForMonth(targetMonth, 8);
         List<WorkshopSchedule> monthSchedules = scheduleService.findSchedulesForMonth(targetMonth);
 
@@ -56,10 +59,13 @@ public class AdminDashboardController {
         model.addAttribute("nextMonthQuery", targetMonth.plusMonths(1).format(MONTH_QUERY_FORMATTER));
         model.addAttribute("monthReservationCount", monthReservationCount);
         model.addAttribute("monthReservationTrend", buildTrend(monthReservationCount, previousMonthReservationCount));
+        model.addAttribute("monthParticipantCount", monthParticipantCount);
+        model.addAttribute("monthParticipantTrend", buildTrend(monthParticipantCount, previousMonthParticipantCount));
         model.addAttribute("monthSales", monthSales);
         model.addAttribute("monthSalesDisplay", formatCurrency(monthSales.totalAmount()));
         model.addAttribute("monthSalesTrend", buildTrend(monthSales.totalAmount(), previousMonthSales.totalAmount()));
         model.addAttribute("openInquiryCount", inquiryService.countOpen());
+        model.addAttribute("inProgressInquiryCount", inquiryService.countInProgress());
         model.addAttribute("monthReservations", monthReservations);
         model.addAttribute("calendarWeeks", buildCalendarWeeks(targetMonth, monthSchedules));
         return "admin/dashboard";
@@ -93,6 +99,13 @@ public class AdminDashboardController {
     private List<List<DashboardCalendarDay>> buildCalendarWeeks(YearMonth targetMonth, List<WorkshopSchedule> schedules) {
         Map<LocalDate, WorkshopSchedule> scheduleMap = schedules.stream()
                 .collect(Collectors.toMap(WorkshopSchedule::getScheduleDate, Function.identity()));
+        Map<LocalDate, Integer> reservedCountMap = schedules.stream()
+                .collect(Collectors.toMap(
+                        WorkshopSchedule::getScheduleDate,
+                        schedule -> schedule.getTimeSlots().stream()
+                                .mapToInt(WorkshopTimeSlot::getReservedCount)
+                                .sum()
+                ));
 
         LocalDate firstDay = targetMonth.atDay(1);
         LocalDate lastDay = targetMonth.atEndOfMonth();
@@ -109,6 +122,7 @@ public class AdminDashboardController {
                     day.getMonth() == targetMonth.getMonth(),
                     schedule != null,
                     schedule != null && schedule.isOpen(),
+                    reservedCountMap.getOrDefault(day, 0),
                     schedule == null ? "" : (schedule.isOpen() ? "開催" : "休止")
             ));
 

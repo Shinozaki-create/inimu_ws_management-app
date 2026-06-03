@@ -9,7 +9,7 @@
 <body>
 <header th:replace="~{admin/fragments :: header}"></header>
 <main class="page">
-  <h1>予約詳細</h1>
+  <h1><span th:replace="~{admin/fragments :: icon-reservations}"></span>予約詳細</h1>
   <div class="two-column">
     <section class="panel">
       <div class="panel-heading"><h2 th:text="${reservation.reservationCode}">code</h2></div>
@@ -24,7 +24,7 @@
           <tr><th>メール</th><td th:text="${reservation.customerEmail}">mail</td></tr>
           <tr><th>電話</th><td th:text="${reservation.customerTel}">tel</td></tr>
           <tr><th>メッセージ</th><td th:text="${reservation.customerMessage}">message</td></tr>
-          <tr><th>状態</th><td><span class="badge" th:attr="data-status=${reservation.status.name()}" th:text="${reservation.status.label}">status</span></td></tr>
+          <tr><th>ステータス</th><td><span class="badge" th:attr="data-status=${reservation.status.name()}" th:text="${reservation.status.label}">status</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -40,6 +40,23 @@
               <option th:each="status : ${reservationStatuses}" th:value="${status}" th:text="${status.label}">status</option>
             </select>
           </label>
+          <div class="detail-update-grid">
+            <label>参加人数
+              <select th:field="*{participantCount}">
+                <option th:each="count : ${participantCountOptions}" th:value="${count}" th:text="${count}">0</option>
+              </select>
+            </label>
+            <label>男性人数
+              <select th:field="*{maleCount}">
+                <option th:each="count : ${participantCountOptions}" th:value="${count}" th:text="${count}">0</option>
+              </select>
+            </label>
+            <label>女性人数
+              <select th:field="*{femaleCount}">
+                <option th:each="count : ${participantCountOptions}" th:value="${count}" th:text="${count}">0</option>
+              </select>
+            </label>
+          </div>
           <label>管理メモ
             <textarea th:field="*{adminMemo}"></textarea>
           </label>

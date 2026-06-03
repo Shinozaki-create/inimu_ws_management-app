@@ -48,6 +48,9 @@ CREATE TABLE reservations (
     reservation_date DATE NOT NULL,
     reservation_time TIME NOT NULL,
     reservation_count INT NOT NULL,
+    participant_count INT,
+    male_count INT,
+    female_count INT,
     customer_family_name VARCHAR(100) NOT NULL,
     customer_given_name VARCHAR(100) NOT NULL,
     customer_family_kana VARCHAR(100) NOT NULL,
@@ -61,7 +64,10 @@ CREATE TABLE reservations (
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL,
     CONSTRAINT fk_reservation_time_slot FOREIGN KEY (time_slot_id) REFERENCES workshop_time_slots(id),
-    CONSTRAINT chk_reservation_count CHECK (reservation_count > 0)
+    CONSTRAINT chk_reservation_count CHECK (reservation_count > 0),
+    CONSTRAINT chk_reservation_participant_count CHECK (participant_count IS NULL OR participant_count >= 0),
+    CONSTRAINT chk_reservation_male_count CHECK (male_count IS NULL OR male_count >= 0),
+    CONSTRAINT chk_reservation_female_count CHECK (female_count IS NULL OR female_count >= 0)
 );
 
 CREATE TABLE inquiries (

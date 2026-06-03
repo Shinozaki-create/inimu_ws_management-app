@@ -9,11 +9,11 @@
 <body>
 <header th:replace="~{admin/fragments :: header}"></header>
 <main class="page">
-  <h1>問い合わせ管理</h1>
+  <h1><span th:replace="~{admin/fragments :: icon-inquiries}"></span>問い合わせ管理</h1>
   <section class="panel">
     <div class="panel-body">
       <table>
-        <thead><tr><th>受付日時</th><th>氏名</th><th>メール</th><th>状態</th><th></th></tr></thead>
+        <thead><tr><th>受付日時</th><th>氏名</th><th>メール</th><th>ステータス</th><th></th></tr></thead>
         <tbody>
         <tr th:each="inquiry : ${inquiries}">
           <td th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">date</td>

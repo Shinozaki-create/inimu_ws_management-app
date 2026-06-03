@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,10 +39,16 @@ public class AdminReservationController {
         Reservation reservation = reservationService.findById(id);
         ReservationStatusUpdateRequest updateRequest = new ReservationStatusUpdateRequest();
         updateRequest.setStatus(reservation.getStatus());
+        updateRequest.setParticipantCount(reservation.getParticipantCount() != null
+                ? reservation.getParticipantCount()
+                : reservation.getReservationCount());
+        updateRequest.setMaleCount(reservation.getMaleCount() != null ? reservation.getMaleCount() : 0);
+        updateRequest.setFemaleCount(reservation.getFemaleCount() != null ? reservation.getFemaleCount() : 0);
         updateRequest.setAdminMemo(reservation.getAdminMemo());
         model.addAttribute("reservation", reservation);
         model.addAttribute("updateRequest", updateRequest);
         model.addAttribute("reservationStatuses", ReservationStatus.values());
+        model.addAttribute("participantCountOptions", IntStream.rangeClosed(0, 10).boxed().toList());
         return "admin/reservation-detail";
     }
 

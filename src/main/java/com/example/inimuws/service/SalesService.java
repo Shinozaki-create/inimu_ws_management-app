@@ -30,7 +30,7 @@ public class SalesService {
         LocalDate start = month.atDay(1);
         LocalDate end = month.atEndOfMonth();
         int totalAmount = reservationRepository.sumTotalAmountByStatusesAndReservationDateBetween(BILLABLE_STATUSES, start, end);
-        int participantCount = reservationRepository.sumReservationCountByStatusesAndReservationDateBetween(BILLABLE_STATUSES, start, end);
+        int participantCount = reservationRepository.sumParticipantCountByStatusesAndReservationDateBetween(BILLABLE_STATUSES, start, end);
         long reservationCount = reservationRepository.countByStatusInAndReservationDateBetween(BILLABLE_STATUSES, start, end);
         return new MonthlySalesSummary(month, totalAmount, reservationCount, participantCount);
     }
@@ -50,7 +50,7 @@ public class SalesService {
                         entry.getKey(),
                         entry.getValue().stream().mapToInt(Reservation::getTotalAmount).sum(),
                         entry.getValue().size(),
-                        entry.getValue().stream().mapToInt(Reservation::getReservationCount).sum()
+                        entry.getValue().stream().mapToInt(Reservation::effectiveParticipantCount).sum()
                 ))
                 .sorted(Comparator.comparing(DailySalesSummary::date))
                 .toList();

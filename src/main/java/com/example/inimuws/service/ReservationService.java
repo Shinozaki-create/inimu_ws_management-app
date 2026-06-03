@@ -31,7 +31,7 @@ import org.springframework.util.StringUtils;
 public class ReservationService {
 
     private static final String PRICE_PER_PERSON_KEY = "price_per_person";
-    private static final DateTimeFormatter CODE_DATE_FORMAT = DateTimeFormatter.BASIC_ISO_DATE;
+    private static final DateTimeFormatter CODE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd");
 
     private final ReservationRepository reservationRepository;
     private final WorkshopTimeSlotRepository timeSlotRepository;
@@ -99,11 +99,7 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public List<Reservation> searchReservations(AdminReservationSearchCondition condition) {
-        return reservationRepository.findAll(buildSpecification(condition), Sort.by(
-                Sort.Order.desc("reservationDate"),
-                Sort.Order.asc("reservationTime"),
-                Sort.Order.desc("createdAt")
-        ));
+        return reservationRepository.findAll(buildSpecification(condition), buildSort(condition));
     }
 
     @Transactional
@@ -111,6 +107,12 @@ public class ReservationService {
         Reservation reservation = findById(id);
         ReservationStatus before = reservation.getStatus();
         ReservationStatus after = request.getStatus();
+        int participantCount = request.getParticipantCount() != null
+                ? request.getParticipantCount()
+                : reservation.effectiveParticipantCount();
+        int maleCount = request.getMaleCount() != null ? request.getMaleCount() : 0;
+        int femaleCount = request.getFemaleCount() != null ? request.getFemaleCount() : 0;
+        int pricePerPerson = getPricePerPerson();
 
         if (before != ReservationStatus.CANCELLED && after == ReservationStatus.CANCELLED) {
             WorkshopTimeSlot slot = timeSlotRepository.findByIdForUpdate(reservation.getTimeSlot().getId())
@@ -126,6 +128,10 @@ public class ReservationService {
         }
 
         reservation.setStatus(after);
+        reservation.setParticipantCount(participantCount);
+        reservation.setMaleCount(maleCount);
+        reservation.setFemaleCount(femaleCount);
+        reservation.setTotalAmount(participantCount * pricePerPerson);
         reservation.setAdminMemo(request.getAdminMemo());
         return reservation;
     }
@@ -144,6 +150,11 @@ public class ReservationService {
     @Transactional(readOnly = true)
     public long countReservationsForMonth(YearMonth month) {
         return reservationRepository.countByReservationDateBetween(month.atDay(1), month.atEndOfMonth());
+    }
+
+    @Transactional(readOnly = true)
+    public long countPending() {
+        return reservationRepository.countByStatus(ReservationStatus.PENDING);
     }
 
     @Transactional(readOnly = true)
@@ -180,6 +191,36 @@ public class ReservationService {
                 ));
             }
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
+        };
+    }
+
+    private Sort buildSort(AdminReservationSearchCondition condition) {
+        if (condition == null || !StringUtils.hasText(condition.getSort())) {
+            return Sort.by(
+                    Sort.Order.desc("reservationDate"),
+                    Sort.Order.asc("reservationTime"),
+                    Sort.Order.desc("createdAt")
+            );
+        }
+
+        Sort.Direction direction = "asc".equalsIgnoreCase(condition.getDirection())
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
+
+        return switch (condition.getSort()) {
+            case "reservationCode" -> Sort.by(new Sort.Order(direction, "reservationCode"))
+                    .and(Sort.by(Sort.Order.desc("createdAt")));
+            case "reservationDate" -> Sort.by(new Sort.Order(direction, "reservationDate"))
+                    .and(Sort.by(Sort.Order.asc("reservationTime"), Sort.Order.desc("createdAt")));
+            case "reservationTime" -> Sort.by(new Sort.Order(direction, "reservationTime"))
+                    .and(Sort.by(Sort.Order.desc("reservationDate"), Sort.Order.desc("createdAt")));
+            case "status" -> Sort.by(new Sort.Order(direction, "status"))
+                    .and(Sort.by(Sort.Order.desc("reservationDate"), Sort.Order.asc("reservationTime"), Sort.Order.desc("createdAt")));
+            default -> Sort.by(
+                    Sort.Order.desc("reservationDate"),
+                    Sort.Order.asc("reservationTime"),
+                    Sort.Order.desc("createdAt")
+            );
         };
     }
 
@@ -223,7 +264,7 @@ public class ReservationService {
         String prefix = "WS-" + reservationDate.format(CODE_DATE_FORMAT) + "-";
         String code;
         do {
-            code = prefix + String.format("%04d", sequence++);
+            code = prefix + String.format("%02d", sequence++);
         } while (reservationRepository.existsByReservationCode(code));
         return code;
     }

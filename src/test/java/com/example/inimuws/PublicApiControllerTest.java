@@ -26,7 +26,7 @@ class PublicApiControllerTest {
     void schedulesApiReturnsSchedules() throws Exception {
         mockMvc.perform(get("/api/schedules"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].date").value("2026-06-06"));
+                .andExpect(jsonPath("$[0].date").value("2026-05-02"));
     }
 
     @Test
@@ -58,7 +58,7 @@ class PublicApiControllerTest {
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.type").value("reservation"))
-                .andExpect(jsonPath("$.reservationCode", startsWith("WS-20260606-")));
+                .andExpect(jsonPath("$.reservationCode", startsWith("WS-260606-")));
     }
 
     @Test

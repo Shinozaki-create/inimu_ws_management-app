@@ -16,4 +16,8 @@ public class AdminReservationSearchCondition {
     private ReservationStatus status;
 
     private String keyword;
+
+    private String sort;
+
+    private String direction;
 }
