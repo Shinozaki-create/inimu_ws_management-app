@@ -4,6 +4,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,17 @@ class AdminMvcTest {
         mockMvc.perform(get("/admin/reservations/code").param("date", "2026-06-13"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("WS-260613-03"));
+    }
+
+    @Test
+    void rootRoutesToTodoAndTodoRoutesToAdmin() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/todo"));
+
+        mockMvc.perform(get("/todo"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin"));
     }
 
     void assertOk(String path) throws Exception {
