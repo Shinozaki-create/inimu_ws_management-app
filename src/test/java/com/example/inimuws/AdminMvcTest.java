@@ -1,8 +1,11 @@
 package com.example.inimuws;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +38,10 @@ class AdminMvcTest {
     @WithMockUser(roles = "ADMIN")
     void adminPagesRenderForAuthenticatedUser() throws Exception {
         assertOk("/admin");
+        mockMvc.perform(get("/admin"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("/admin/logout")))
+                .andExpect(content().string(containsString("ログアウト")));
         assertOk("/admin/reservations");
         assertOk("/admin/reservations/new");
         assertOk("/admin/schedules");
@@ -55,6 +62,14 @@ class AdminMvcTest {
         mockMvc.perform(get("/todo"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin"));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void adminLogoutRedirectsToLoginPage() throws Exception {
+        mockMvc.perform(post("/admin/logout").with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/login?logout"));
     }
 
     void assertOk(String path) throws Exception {

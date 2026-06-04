@@ -43,17 +43,60 @@ a:hover {
   padding: 24px;
 }
 
+.login-shell {
+  align-items: center;
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+  width: min(400px, calc(100% - 32px));
+}
+
+.login-hero {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  text-align: center;
+}
+
+.login-logo {
+  display: block;
+  height: auto;
+  max-width: 128px;
+  width: 128px;
+}
+
+.login-title {
+  color: var(--text-strong);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
 .login-panel,
 .page {
   width: min(1120px, calc(100% - 32px));
 }
 
 .login-panel {
-  max-width: 400px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
+  display: grid;
+  gap: 16px;
+  justify-items: center;
   padding: 32px;
+  width: 100%;
+}
+
+.login-panel > .muted,
+.login-panel .stack {
+  width: 100%;
+}
+
+.login-panel > .muted {
+  text-align: center;
 }
 
 .admin-header {
@@ -114,7 +157,7 @@ a:hover {
   border: 1px solid var(--border);
   border-radius: 8px;
   color: #334155;
-  display: flex;
+  display: inline-flex;
   font-weight: 600;
   justify-content: space-between;
   gap: 12px;
@@ -122,11 +165,44 @@ a:hover {
   padding: 9px 14px;
   text-decoration: none;
   transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
-  width: 100%;
+  white-space: nowrap;
+  width: auto;
 }
 
 .nav-button:hover,
 .nav-button:focus-visible {
+  background: var(--surface-hover);
+  border-color: #d8dee7;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.nav-logout-form {
+  width: 100%;
+}
+
+.nav-logout-button {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #334155;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 600;
+  gap: 12px;
+  justify-content: flex-start;
+  min-height: 40px;
+  padding: 9px 14px;
+  text-align: left;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+  white-space: nowrap;
+  width: auto;
+}
+
+.nav-logout-button:hover,
+.nav-logout-button:focus-visible {
   background: var(--surface-hover);
   border-color: #d8dee7;
   color: var(--accent);
@@ -184,6 +260,17 @@ a:hover {
 
 .login-panel > h1 {
   margin-bottom: 18px;
+}
+
+.login-panel button[type="submit"] {
+  background: #4b5563;
+  border-color: #4b5563;
+}
+
+.login-panel button[type="submit"]:hover,
+.login-panel button[type="submit"]:focus-visible {
+  background: #374151;
+  border-color: #374151;
 }
 
 .page-header-actions > h1 {
@@ -1004,20 +1091,22 @@ button.secondary:hover {
     flex-direction: column;
     flex-wrap: nowrap;
     gap: 8px;
+    flex: 1 1 auto;
     margin-top: 4px;
-    min-height: calc(100vh - 92px);
+    min-height: 0;
   }
 
   .nav-button {
+    width: 100%;
     justify-content: space-between;
   }
 
-  .nav form {
+  .nav-logout-form {
     width: 100%;
     margin-top: auto;
   }
 
-  .nav form button {
+  .nav-logout-button {
     width: 100%;
   }
 }
