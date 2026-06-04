@@ -3,6 +3,7 @@ package com.example.inimuws.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.example.inimuws.dto.AdminReservationSearchCondition;
 import com.example.inimuws.dto.ReservationRequest;
 import com.example.inimuws.dto.ReservationResponse;
 import com.example.inimuws.dto.ReservationStatusUpdateRequest;
@@ -45,6 +46,34 @@ class ReservationServiceTest {
 
         WorkshopTimeSlot slot = timeSlotRepository.findBySchedule_ScheduleDateOrderByStartTimeAsc(LocalDate.of(2026, 6, 6)).get(0);
         assertThat(slot.getReservedCount()).isEqualTo(2);
+    }
+
+    @Test
+    void createsAdminReservationWithConfirmedStatusAndIncreasesReservedCount() {
+        WorkshopTimeSlot slot = timeSlotRepository.findBySchedule_ScheduleDateOrderByStartTimeAsc(LocalDate.of(2026, 6, 6))
+                .stream()
+                .filter(candidate -> candidate.getStartTime().equals(LocalTime.of(11, 0)))
+                .findFirst()
+                .orElseThrow();
+        int beforeReservedCount = slot.getReservedCount();
+
+        Reservation reservation = reservationService.createAdminReservation(reservationRequest(LocalTime.of(11, 0), 2));
+
+        assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.CONFIRMED);
+        assertThat(reservation.getReservationCode()).startsWith("WS-260606-");
+
+        WorkshopTimeSlot updatedSlot = timeSlotRepository.findBySchedule_ScheduleDateOrderByStartTimeAsc(LocalDate.of(2026, 6, 6))
+                .stream()
+                .filter(candidate -> candidate.getStartTime().equals(LocalTime.of(11, 0)))
+                .findFirst()
+                .orElseThrow();
+        assertThat(updatedSlot.getReservedCount()).isEqualTo(beforeReservedCount + 2);
+    }
+
+    @Test
+    void previewsReservationCodeFromReservationDate() {
+        assertThat(reservationService.previewReservationCode(LocalDate.of(2026, 6, 13)))
+                .isEqualTo("WS-260613-03");
     }
 
     @Test
@@ -101,6 +130,64 @@ class ReservationServiceTest {
         assertThat(updated.getMaleCount()).isEqualTo(1);
         assertThat(updated.getFemaleCount()).isEqualTo(2);
         assertThat(updated.getTotalAmount()).isEqualTo(16500);
+    }
+
+    @Test
+    void updatingReservationStoresAgeBreakdownAndRecalculatesAmount() {
+        ReservationResponse response = reservationService.createReservationOrInquiry(reservationRequest(LocalTime.of(11, 0), 4));
+        Reservation reservation = reservationRepository.findByReservationCode(response.reservationCode()).orElseThrow();
+
+        ReservationStatusUpdateRequest updateRequest = new ReservationStatusUpdateRequest();
+        updateRequest.setStatus(ReservationStatus.CONFIRMED);
+        updateRequest.setMaleUnder10Count(1);
+        updateRequest.setMale20sCount(2);
+        updateRequest.setFemale30sCount(1);
+        updateRequest.setFemale60PlusCount(1);
+        updateRequest.setAdminMemo("年齢内訳の確認済み");
+
+        Reservation updated = reservationService.updateStatus(reservation.getId(), updateRequest);
+
+        assertThat(updated.getParticipantCount()).isEqualTo(5);
+        assertThat(updated.getMaleCount()).isEqualTo(3);
+        assertThat(updated.getFemaleCount()).isEqualTo(2);
+        assertThat(updated.getMaleUnder10Count()).isEqualTo(1);
+        assertThat(updated.getMale20sCount()).isEqualTo(2);
+        assertThat(updated.getFemale30sCount()).isEqualTo(1);
+        assertThat(updated.getFemale60PlusCount()).isEqualTo(1);
+        assertThat(updated.getTotalAmount()).isEqualTo(27500);
+    }
+
+    @Test
+    void searchReservationsCanFilterByYearAndMonth() {
+        AdminReservationSearchCondition condition = new AdminReservationSearchCondition();
+        condition.setYear(2026);
+        condition.setMonth(6);
+
+        assertThat(reservationService.searchReservations(condition))
+                .isNotEmpty()
+                .allMatch(reservation -> reservation.getReservationDate().getYear() == 2026
+                        && reservation.getReservationDate().getMonthValue() == 6);
+    }
+
+    @Test
+    void searchReservationsCanFilterByFullDate() {
+        AdminReservationSearchCondition condition = new AdminReservationSearchCondition();
+        condition.setYear(2026);
+        condition.setMonth(6);
+        condition.setDay(13);
+
+        assertThat(reservationService.searchReservations(condition))
+                .isNotEmpty()
+                .allMatch(reservation -> reservation.getReservationDate().equals(LocalDate.of(2026, 6, 13)));
+    }
+
+    @Test
+    void searchReservationsMatchesFuriganaKeyword() {
+        AdminReservationSearchCondition condition = new AdminReservationSearchCondition();
+        condition.setKeyword("こばやし");
+
+        assertThat(reservationService.searchReservations(condition))
+                .anyMatch(reservation -> reservation.customerFuriganaHiragana().contains("こばやし"));
     }
 
     private ReservationRequest reservationRequest(LocalTime time, int count) {

@@ -3,6 +3,7 @@ package com.example.inimuws;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
@@ -34,9 +35,14 @@ class AdminMvcTest {
     void adminPagesRenderForAuthenticatedUser() throws Exception {
         assertOk("/admin");
         assertOk("/admin/reservations");
+        assertOk("/admin/reservations/new");
         assertOk("/admin/schedules");
         assertOk("/admin/sales");
         assertOk("/admin/inquiries");
+
+        mockMvc.perform(get("/admin/reservations/code").param("date", "2026-06-13"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("WS-260613-03"));
     }
 
     void assertOk(String path) throws Exception {

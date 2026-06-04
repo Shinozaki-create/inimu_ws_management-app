@@ -16,5 +16,19 @@ public class ReservationStatusUpdateRequest {
     private Integer maleCount;
     private Integer femaleCount;
 
+    private Integer maleUnder10Count;
+    private Integer male20sCount;
+    private Integer male30sCount;
+    private Integer male40sCount;
+    private Integer male50sCount;
+    private Integer male60PlusCount;
+
+    private Integer femaleUnder10Count;
+    private Integer female20sCount;
+    private Integer female30sCount;
+    private Integer female40sCount;
+    private Integer female50sCount;
+    private Integer female60PlusCount;
+
     private String adminMemo;
 }

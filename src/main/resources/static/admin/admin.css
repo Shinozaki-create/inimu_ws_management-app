@@ -186,6 +186,36 @@ a:hover {
   margin-bottom: 18px;
 }
 
+.page-header-actions > h1 {
+  font-size: 18px;
+}
+
+.page-header-actions {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin: 0 0 22px;
+}
+
+.page-header-actions > h1 {
+  margin-bottom: 0;
+}
+
+.reservation-add-button {
+  background: #4b5563;
+  border-color: #4b5563;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.reservation-add-button:hover,
+.reservation-add-button:focus-visible {
+  background: #374151;
+  border-color: #374151;
+  color: #fff;
+}
+
 .toolbar {
   align-items: end;
   background: var(--surface);
@@ -196,6 +226,73 @@ a:hover {
   gap: 14px;
   margin: 18px 0 22px;
   padding: 16px;
+}
+
+.reservation-create-form.stack {
+  gap: 16px;
+}
+
+.reservation-create-alert {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #b91c1c;
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+}
+
+.reservation-create-alert p {
+  margin: 0;
+}
+
+.reservation-create-row {
+  display: grid;
+  gap: 12px;
+}
+
+.reservation-create-row--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.reservation-create-row--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.reservation-create-field--full {
+  grid-column: 1 / -1;
+}
+
+.toolbar-date-fields {
+  align-items: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.toolbar-field {
+  min-width: 86px;
+}
+
+.toolbar-year-field {
+  min-width: 118px;
+}
+
+.toolbar-field input,
+.toolbar-field select {
+  min-width: 0;
+  width: 100%;
+}
+
+.toolbar-submit {
+  background: #4b5563;
+  border-color: #4b5563;
+}
+
+.toolbar-submit:hover,
+.toolbar-submit:focus-visible {
+  background: #374151;
+  border-color: #374151;
 }
 
 .metrics {
@@ -304,6 +401,18 @@ label {
   gap: 4px;
 }
 
+.detail-caption {
+  color: var(--muted);
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.breakdown-title {
+  margin-bottom: -2px;
+}
+
 input,
 select,
 textarea {
@@ -384,10 +493,107 @@ button.secondary:hover {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.reservation-create-message {
+  grid-column: 1 / -1;
+}
+
+.reservation-create-privacy {
+  align-self: end;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+}
+
+.reservation-create-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
 .two-column {
   display: grid;
   gap: 22px;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+}
+
+.reservation-detail-layout {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+}
+
+.breakdown-table-wrap {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.breakdown-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.breakdown-table thead th {
+  font-size: 12px;
+  padding: 4px 2px;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.breakdown-table tbody th {
+  background: #f8fafc;
+  color: var(--text-strong);
+  font-size: 12px;
+  font-weight: 400;
+  padding: 4px 2px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.breakdown-table td {
+  font-size: 12px;
+  padding: 4px 2px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.breakdown-table select {
+  font-size: 12px;
+  min-width: 0;
+  padding: 3px 4px;
+  text-align: center;
+  width: 100%;
+}
+
+.breakdown-subtotal,
+.breakdown-total {
+  font-weight: 400;
+}
+
+.breakdown-total {
+  background: #f8fafc;
+  font-size: 12px;
+}
+
+.reservation-status-form {
+  gap: 0;
+}
+
+.reservation-status-section,
+.reservation-participant-section {
+  margin-bottom: 24px;
+}
+
+.reservation-memo-section {
+  margin-bottom: 35px;
+}
+
+.detail-back-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
 }
 
 .badge {
