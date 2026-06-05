@@ -27,7 +27,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
-                        .requestMatchers("/api/**", "/admin/login", "/admin/*.css", "/h2-console/**").permitAll()
+                        .requestMatchers("/api/**", "/admin/login", "/admin/*.css", "/admin/images/**", "/h2-console/**").permitAll()
                         .requestMatchers("/admin/**").authenticated()
                         .anyRequest().permitAll()
                 )

@@ -65,6 +65,12 @@ class AdminMvcTest {
     }
 
     @Test
+    void loginLogoIsPubliclyAccessible() throws Exception {
+        mockMvc.perform(get("/admin/images/inimu-logo.png"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     @WithMockUser(roles = "ADMIN")
     void adminLogoutRedirectsToLoginPage() throws Exception {
         mockMvc.perform(post("/admin/logout").with(csrf()))
