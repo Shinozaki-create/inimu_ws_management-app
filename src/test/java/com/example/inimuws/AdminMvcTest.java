@@ -66,7 +66,7 @@ class AdminMvcTest {
                 .andExpect(content().string(containsString("ステータス")))
                 .andExpect(content().string(containsString("<th>更新</th>")))
                 .andExpect(content().string(containsString("定員：")))
-                .andExpect(content().string(containsString("□受付")))
+                .andExpect(content().string(containsString("<span>受付</span>")))
                 .andExpect(content().string(containsString("（10）")))
                 .andExpect(content().string(containsString("残:")))
                 .andExpect(content().string(containsString("詳細")))

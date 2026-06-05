@@ -22,4 +22,9 @@ public class AdminSidebarModelAdvice {
     public long sidebarInquiryOpenCount() {
         return inquiryService.countOpen();
     }
+
+    @ModelAttribute("adminCssVersion")
+    public long adminCssVersion() {
+        return System.currentTimeMillis();
+    }
 }

@@ -1453,15 +1453,37 @@ button.secondary:hover {
 
 .schedule-side-note textarea {
   width: 100%;
-  min-height: 84px;
+  flex: 1;
+  min-height: 0;
   resize: vertical;
 }
 
 .schedule-side-form {
   display: grid;
-  gap: 12px;
-  min-height: 100%;
-  padding: 4px 0 0;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  inset: 0;
+  position: absolute;
+  padding: 0;
+}
+
+.schedule-side-form > .schedule-side-open-check,
+.schedule-side-form > button,
+.schedule-side-form > .schedule-side-note {
+  min-height: 0;
+  padding: 13px 14px;
+}
+
+.schedule-side-form > button,
+.schedule-side-form > .schedule-side-note {
+  border-top: 1px solid var(--border-soft);
+}
+
+.schedule-side-form > button {
+  display: block;
+  min-height: 40px;
+  padding: 9px 16px;
+  width: 100%;
 }
 
 .schedule-side-open-check {
@@ -1472,8 +1494,9 @@ button.secondary:hover {
 }
 
 .schedule-slot-side-cell {
+  position: relative;
   vertical-align: top;
-  padding: 12px 10px;
+  padding: 0;
 }
 
 .schedule-edit-form {
@@ -1495,7 +1518,7 @@ button.secondary:hover {
 
 .schedule-slot-table th:first-child,
 .schedule-slot-table td:first-child {
-  width: 124px;
+  width: 104px;
 }
 
 .schedule-slot-table th:nth-child(2),
@@ -1504,21 +1527,25 @@ button.secondary:hover {
 .schedule-slot-table td:nth-child(3),
 .schedule-slot-table th:nth-child(4),
 .schedule-slot-table td:nth-child(4) {
-  width: 58px;
+  width: 52px;
 }
 
 .schedule-slot-table th:nth-child(5),
 .schedule-slot-table td:nth-child(5) {
   width: 84px;
+  border-right: 1px solid var(--border-soft);
 }
 
 .schedule-slot-table th:nth-child(6),
 .schedule-slot-table td:nth-child(6) {
-  width: 164px;
+  width: 232px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 .schedule-slot-table th:nth-child(7),
 .schedule-slot-table td:nth-child(7) {
+  border-left: 1px solid var(--border-soft);
   width: 240px;
 }
 
@@ -1533,27 +1560,32 @@ button.secondary:hover {
 }
 
 .schedule-slot-capacity-input {
-  width: 52px;
+  width: 68px;
 }
 
 .schedule-slot-update-cell {
   align-items: center;
-  display: flex;
-  gap: 12px;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 20px;
   white-space: nowrap;
 }
 
 .schedule-slot-update-cell .schedule-slot-inline-label {
-  flex: 1 1 auto;
   min-width: 0;
 }
 
 .schedule-slot-flag {
   align-items: center;
   display: inline-flex;
+  gap: 4px;
+  justify-self: end;
+}
+
+.schedule-side-note {
+  display: flex;
+  flex-direction: column;
   gap: 6px;
-  flex: 0 0 auto;
 }
 
 @media (min-width: 901px) {

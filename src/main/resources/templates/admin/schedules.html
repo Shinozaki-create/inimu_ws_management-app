@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>開催日管理</title>
-  <link rel="stylesheet" th:href="@{/admin/admin.css}">
+  <link rel="stylesheet" th:href="@{/admin/admin.css(v=${adminCssVersion})}">
 </head>
 <body>
 <header th:replace="~{admin/fragments :: header}"></header>
@@ -201,7 +201,7 @@
                            value="true"
                            th:checked="${slot.active}"
                            th:attr="form=${'slot-form-' + slot.id},data-slot-auto-submit='true'">
-                    <span>□受付</span>
+                    <span>受付</span>
                   </label>
                 </td>
                 <td th:if="${iterStat.first}" th:rowspan="${#lists.size(schedule.timeSlots)}" class="schedule-slot-side-cell">
