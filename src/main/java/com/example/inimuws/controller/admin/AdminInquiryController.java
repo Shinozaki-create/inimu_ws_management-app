@@ -1,5 +1,6 @@
 package com.example.inimuws.controller.admin;
 
+import com.example.inimuws.dto.AdminInquirySearchCondition;
 import com.example.inimuws.dto.InquiryStatusUpdateRequest;
 import com.example.inimuws.entity.Inquiry;
 import com.example.inimuws.enums.InquiryStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.util.StringUtils;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,9 +23,9 @@ public class AdminInquiryController {
     private final InquiryService inquiryService;
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("inquiries", inquiryService.findAll());
-        model.addAttribute("inquiryStatuses", InquiryStatus.values());
+    public String list(@ModelAttribute("condition") AdminInquirySearchCondition condition, Model model) {
+        normalize(condition);
+        model.addAttribute("inquiries", inquiryService.findAll(condition));
         return "admin/inquiries";
     }
 
@@ -43,5 +45,14 @@ public class AdminInquiryController {
     public String update(@PathVariable Long id, @ModelAttribute InquiryStatusUpdateRequest request) {
         inquiryService.updateStatus(id, request);
         return "redirect:/admin/inquiries/" + id;
+    }
+
+    private void normalize(AdminInquirySearchCondition condition) {
+        if (!StringUtils.hasText(condition.getSort())) {
+            condition.setSort("createdAt");
+        }
+        if (!StringUtils.hasText(condition.getDirection())) {
+            condition.setDirection("desc");
+        }
     }
 }

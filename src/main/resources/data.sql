@@ -161,6 +161,7 @@ SET reserved_count = COALESCE((
 ), 0);
 
 INSERT INTO inquiries (
+    inquiry_code,
     customer_family_name,
     customer_given_name,
     customer_family_kana,
@@ -174,14 +175,14 @@ INSERT INTO inquiries (
     updated_at
 )
 VALUES
-    ('中村', '悠', 'ナカムラ', 'ユウ', 'yu.nakamura.inquiry@example.com', '09011119999', '小学生でも参加できますか。', 'OPEN', NULL, TIMESTAMP '2026-05-02 08:40:00', TIMESTAMP '2026-05-02 08:40:00'),
-    ('小林', '真奈', 'コバヤシ', 'マナ', 'mana.kobayashi.inquiry@example.com', '09022220000', '持ち物を教えてください。', 'IN_PROGRESS', '返信文面を作成中', TIMESTAMP '2026-05-18 12:05:00', TIMESTAMP '2026-05-18 12:30:00'),
-    ('渡辺', '亮', 'ワタナベ', 'リョウ', 'ryo.watanabe.inquiry@example.com', '09033331111', '法人参加は可能ですか。', 'CLOSED', 'メール返信済み', TIMESTAMP '2026-06-03 16:25:00', TIMESTAMP '2026-06-03 17:10:00'),
-    ('森', '彩', 'モリ', 'アヤ', 'aya.mori.inquiry@example.com', '09044442222', '夏休みの開催日程を知りたいです。', 'OPEN', NULL, TIMESTAMP '2026-07-01 09:05:00', TIMESTAMP '2026-07-01 09:05:00'),
-    ('田中', '健', 'タナカ', 'ケン', 'ken.tanaka.inquiry@example.com', '09055553333', '送迎の必要はありますか。', 'IN_PROGRESS', '確認中', TIMESTAMP '2026-07-22 11:20:00', TIMESTAMP '2026-07-22 11:55:00'),
-    ('高橋', '美咲', 'タカハシ', 'ミサキ', 'misaki.takahashi.inquiry@example.com', '09066664444', '小学生の兄弟でも一緒に参加できますか。', 'OPEN', NULL, TIMESTAMP '2026-08-04 14:10:00', TIMESTAMP '2026-08-04 14:10:00'),
-    ('鈴木', '葵', 'スズキ', 'アオイ', 'aoi.suzuki.inquiry@example.com', '09077775555', '材料は何を使いますか。', 'CLOSED', '案内済み', TIMESTAMP '2026-08-18 10:35:00', TIMESTAMP '2026-08-18 11:05:00'),
-    ('佐藤', '遥', 'サトウ', 'ハルカ', 'haruka.sato.inquiry@example.com', '09088886666', '9月の空き状況を教えてください。', 'OPEN', NULL, TIMESTAMP '2026-09-09 08:55:00', TIMESTAMP '2026-09-09 08:55:00'),
-    ('木村', '亮', 'キムラ', 'リョウ', 'ryo.kimura.inquiry@example.com', '09099997777', '団体予約は何名から可能ですか。', 'IN_PROGRESS', '返答待ち', TIMESTAMP '2026-09-24 13:40:00', TIMESTAMP '2026-09-24 14:05:00'),
-    ('山本', '結衣', 'ヤマモト', 'ユイ', 'yui.yamamoto.inquiry@example.com', '09111118888', 'キャンセル期限を確認したいです。', 'OPEN', NULL, TIMESTAMP '2026-09-28 17:15:00', TIMESTAMP '2026-09-28 17:15:00');
+    ('INQ-260502-01', '中村', '悠', 'ナカムラ', 'ユウ', 'yu.nakamura.inquiry@example.com', '09011119999', '小学生でも参加できますか。', 'OPEN', NULL, TIMESTAMP '2026-05-02 08:40:00', TIMESTAMP '2026-05-02 08:40:00'),
+    ('INQ-260518-01', '小林', '真奈', 'コバヤシ', 'マナ', 'mana.kobayashi.inquiry@example.com', '09022220000', '持ち物を教えてください。', 'IN_PROGRESS', '返信文面を作成中', TIMESTAMP '2026-05-18 12:05:00', TIMESTAMP '2026-05-18 12:30:00'),
+    ('INQ-260603-01', '渡辺', '亮', 'ワタナベ', 'リョウ', 'ryo.watanabe.inquiry@example.com', '09033331111', '法人参加は可能ですか。', 'CLOSED', 'メール返信済み', TIMESTAMP '2026-06-03 16:25:00', TIMESTAMP '2026-06-03 17:10:00'),
+    ('INQ-260701-01', '森', '彩', 'モリ', 'アヤ', 'aya.mori.inquiry@example.com', '09044442222', '夏休みの開催日程を知りたいです。', 'OPEN', NULL, TIMESTAMP '2026-07-01 09:05:00', TIMESTAMP '2026-07-01 09:05:00'),
+    ('INQ-260722-01', '田中', '健', 'タナカ', 'ケン', 'ken.tanaka.inquiry@example.com', '09055553333', '送迎の必要はありますか。', 'IN_PROGRESS', '確認中', TIMESTAMP '2026-07-22 11:20:00', TIMESTAMP '2026-07-22 11:55:00'),
+    ('INQ-260804-01', '高橋', '美咲', 'タカハシ', 'ミサキ', 'misaki.takahashi.inquiry@example.com', '09066664444', '小学生の兄弟でも一緒に参加できますか。', 'OPEN', NULL, TIMESTAMP '2026-08-04 14:10:00', TIMESTAMP '2026-08-04 14:10:00'),
+    ('INQ-260818-01', '鈴木', '葵', 'スズキ', 'アオイ', 'aoi.suzuki.inquiry@example.com', '09077775555', '材料は何を使いますか。', 'CLOSED', '案内済み', TIMESTAMP '2026-08-18 10:35:00', TIMESTAMP '2026-08-18 11:05:00'),
+    ('INQ-260909-01', '佐藤', '遥', 'サトウ', 'ハルカ', 'haruka.sato.inquiry@example.com', '09088886666', '9月の空き状況を教えてください。', 'OPEN', NULL, TIMESTAMP '2026-09-09 08:55:00', TIMESTAMP '2026-09-09 08:55:00'),
+    ('INQ-260924-01', '木村', '亮', 'キムラ', 'リョウ', 'ryo.kimura.inquiry@example.com', '09099997777', '団体予約は何名から可能ですか。', 'IN_PROGRESS', '返答待ち', TIMESTAMP '2026-09-24 13:40:00', TIMESTAMP '2026-09-24 14:05:00'),
+    ('INQ-260928-01', '山本', '結衣', 'ヤマモト', 'ユイ', 'yui.yamamoto.inquiry@example.com', '09111118888', 'キャンセル期限を確認したいです。', 'OPEN', NULL, TIMESTAMP '2026-09-28 17:15:00', TIMESTAMP '2026-09-28 17:15:00');
 

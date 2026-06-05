@@ -274,7 +274,12 @@ a:hover {
 }
 
 .page-header-actions > h1 {
+  align-items: center;
+  display: flex;
   font-size: 18px;
+  gap: 8px;
+  line-height: 1.2;
+  margin: 0;
 }
 
 .page-header-actions {
@@ -289,15 +294,15 @@ a:hover {
   margin-bottom: 0;
 }
 
-.reservation-add-button {
+.button.reservation-add-button {
   background: #4b5563;
   border-color: #4b5563;
   color: #fff;
   white-space: nowrap;
 }
 
-.reservation-add-button:hover,
-.reservation-add-button:focus-visible {
+.button.reservation-add-button:hover,
+.button.reservation-add-button:focus-visible {
   background: #374151;
   border-color: #374151;
   color: #fff;
@@ -1049,13 +1054,13 @@ button.secondary:hover {
 }
 
 .badge[data-status="OPEN"] {
-  background: #eef2f7;
-  color: #475569;
+  background: #fdecec;
+  color: #d14343;
 }
 
 .badge[data-status="IN_PROGRESS"] {
-  background: #eef3f9;
-  color: #334155;
+  background: #fff4e5;
+  color: #c7771a;
 }
 
 @media (min-width: 901px) {

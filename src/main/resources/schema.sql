@@ -96,6 +96,7 @@ CREATE TABLE reservations (
 
 CREATE TABLE inquiries (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    inquiry_code VARCHAR(50) NOT NULL UNIQUE,
     customer_family_name VARCHAR(100) NOT NULL,
     customer_given_name VARCHAR(100) NOT NULL,
     customer_family_kana VARCHAR(100) NOT NULL,

@@ -46,7 +46,14 @@ class AdminMvcTest {
         assertOk("/admin/reservations/new");
         assertOk("/admin/schedules");
         assertOk("/admin/sales");
-        assertOk("/admin/inquiries");
+        mockMvc.perform(get("/admin/inquiries"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("INQ-260502-01")))
+                .andExpect(content().string(containsString("返信文面を作成中")));
+        mockMvc.perform(get("/admin/inquiries/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("INQ-260502-01")))
+                .andExpect(content().string(containsString("問い合わせ管理ページへ戻る")));
 
         mockMvc.perform(get("/admin/reservations/code").param("date", "2026-06-13"))
                 .andExpect(status().isOk())

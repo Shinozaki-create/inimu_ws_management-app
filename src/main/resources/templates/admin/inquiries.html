@@ -13,16 +13,42 @@
   <section class="panel">
     <div class="panel-body">
       <table>
-        <thead><tr><th>受付日時</th><th>氏名</th><th>メール</th><th>ステータス</th><th></th></tr></thead>
+        <thead>
+        <tr>
+          <th>問い合わせ番号</th>
+          <th class="sortable-th">
+            <a class="sort-link" th:href="@{/admin/inquiries(sort='createdAt',direction=${condition.sort == 'createdAt' and condition.direction == 'asc' ? 'desc' : 'asc'})}">
+              受付日時
+              <span class="sort-indicator" th:if="${condition.sort == 'createdAt'}" th:text="${condition.direction == 'asc' ? '▲' : '▼'}">▼</span>
+            </a>
+          </th>
+          <th>氏名</th>
+          <th>ふりがな</th>
+          <th>メール</th>
+          <th class="sortable-th">
+            <a class="sort-link" th:href="@{/admin/inquiries(sort='status',direction=${condition.sort == 'status' and condition.direction == 'asc' ? 'desc' : 'asc'})}">
+              ステータス
+              <span class="sort-indicator" th:if="${condition.sort == 'status'}" th:text="${condition.direction == 'asc' ? '▲' : '▼'}">▼</span>
+            </a>
+          </th>
+          <th>管理メモ</th>
+          <th></th>
+        </tr>
+        </thead>
         <tbody>
         <tr th:each="inquiry : ${inquiries}">
-          <td th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">date</td>
-          <td th:text="${inquiry.customerName()}">name</td>
-          <td th:text="${inquiry.customerEmail}">mail</td>
+          <td th:text="${inquiry.inquiryCode}">INQ-260502-01</td>
+          <td th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">2026-05-02 08:40</td>
+          <td th:text="${inquiry.customerName()}">中村 悠</td>
+          <td th:text="${inquiry.customerFuriganaHiragana()}">なかむら ゆう</td>
+          <td th:text="${inquiry.customerEmail}">yu.nakamura.inquiry@example.com</td>
           <td><span class="badge" th:attr="data-status=${inquiry.status.name()}" th:text="${inquiry.status.label}">status</span></td>
+          <td th:text="${inquiry.adminMemo != null ? inquiry.adminMemo : '-'}">-</td>
           <td><a th:href="@{/admin/inquiries/{id}(id=${inquiry.id})}">詳細</a></td>
         </tr>
-        <tr th:if="${#lists.isEmpty(inquiries)}"><td colspan="5" class="muted">問い合わせはありません。</td></tr>
+        <tr th:if="${#lists.isEmpty(inquiries)}">
+          <td colspan="8" class="muted">問い合わせはありません。</td>
+        </tr>
         </tbody>
       </table>
     </div>
