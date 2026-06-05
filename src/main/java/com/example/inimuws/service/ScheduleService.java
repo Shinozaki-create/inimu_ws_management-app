@@ -9,9 +9,13 @@ import com.example.inimuws.dto.TimeSlotUpdateRequest;
 import com.example.inimuws.entity.WorkshopSchedule;
 import com.example.inimuws.entity.WorkshopTimeSlot;
 import com.example.inimuws.exception.BusinessException;
-import java.time.YearMonth;
 import com.example.inimuws.repository.WorkshopScheduleRepository;
 import com.example.inimuws.repository.WorkshopTimeSlotRepository;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,8 +25,15 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ScheduleService {
 
+    private static final List<TimeSlotTemplate> DEFAULT_TIME_SLOTS = List.of(
+            new TimeSlotTemplate(LocalTime.of(11, 0), LocalTime.of(12, 0)),
+            new TimeSlotTemplate(LocalTime.of(13, 0), LocalTime.of(14, 0)),
+            new TimeSlotTemplate(LocalTime.of(15, 0), LocalTime.of(16, 0))
+    );
+
     private final WorkshopScheduleRepository scheduleRepository;
     private final WorkshopTimeSlotRepository timeSlotRepository;
+    private final JapaneseHolidayCalendar holidayCalendar;
 
     @Transactional(readOnly = true)
     public List<ScheduleResponse> getPublicSchedules() {
@@ -32,7 +43,7 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<TimeSlotResponse> getPublicTimeSlots(java.time.LocalDate date) {
+    public List<TimeSlotResponse> getPublicTimeSlots(LocalDate date) {
         return timeSlotRepository.findBySchedule_ScheduleDateOrderByStartTimeAsc(date).stream()
                 .map(this::toTimeSlotResponse)
                 .toList();
@@ -62,16 +73,26 @@ public class ScheduleService {
     }
 
     @Transactional
-    public WorkshopSchedule createSchedule(ScheduleCreateRequest request) {
-        scheduleRepository.findByScheduleDate(request.getScheduleDate()).ifPresent(existing -> {
-            throw new BusinessException("指定日の開催日は既に登録されています");
-        });
-        WorkshopSchedule schedule = WorkshopSchedule.builder()
-                .scheduleDate(request.getScheduleDate())
-                .open(request.isOpen())
-                .note(request.getNote())
-                .build();
-        return scheduleRepository.save(schedule);
+    public List<WorkshopSchedule> createSchedule(ScheduleCreateRequest request) {
+        validateScheduleCreateRequest(request);
+
+        List<LocalDate> targetDates = collectTargetDates(request);
+        if (targetDates.isEmpty()) {
+            throw new BusinessException("指定条件に一致する開催日がありません");
+        }
+
+        for (LocalDate targetDate : targetDates) {
+            if (scheduleRepository.findByScheduleDate(targetDate).isPresent()) {
+                throw new BusinessException("指定期間に既に開催日が登録されています: " + targetDate);
+            }
+        }
+
+        List<WorkshopSchedule> createdSchedules = new ArrayList<>();
+        for (LocalDate targetDate : targetDates) {
+            WorkshopSchedule schedule = buildSchedule(targetDate, request);
+            createdSchedules.add(scheduleRepository.save(schedule));
+        }
+        return createdSchedules;
     }
 
     @Transactional
@@ -142,9 +163,73 @@ public class ScheduleService {
         );
     }
 
-    private void validateTimeRange(java.time.LocalTime startTime, java.time.LocalTime endTime) {
+    private void validateScheduleCreateRequest(ScheduleCreateRequest request) {
+        if (request.getStartDate() == null || request.getEndDate() == null) {
+            throw new BusinessException("開始日と終了日を指定してください");
+        }
+        if (request.getEndDate().isBefore(request.getStartDate())) {
+            throw new BusinessException("終了日は開始日以降を指定してください");
+        }
+        if (request.selectedWeekdays().isEmpty() && !request.isHoliday()) {
+            throw new BusinessException("少なくとも1つの曜日または祝日を選択してください");
+        }
+        if (request.selectedTimeSlotIndexes().isEmpty()) {
+            throw new BusinessException("少なくとも1つの時間枠を選択してください");
+        }
+    }
+
+    private List<LocalDate> collectTargetDates(ScheduleCreateRequest request) {
+        List<DayOfWeek> selectedWeekdays = request.selectedWeekdays();
+        List<LocalDate> targetDates = new ArrayList<>();
+        for (LocalDate date = request.getStartDate(); !date.isAfter(request.getEndDate()); date = date.plusDays(1)) {
+            boolean matchesWeekday = selectedWeekdays.contains(date.getDayOfWeek());
+            boolean matchesHoliday = request.isHoliday() && holidayCalendar.isHoliday(date);
+            if (matchesWeekday || matchesHoliday) {
+                targetDates.add(date);
+            }
+        }
+        return targetDates;
+    }
+
+    private WorkshopSchedule buildSchedule(LocalDate scheduleDate, ScheduleCreateRequest request) {
+        WorkshopSchedule schedule = WorkshopSchedule.builder()
+                .scheduleDate(scheduleDate)
+                .open(request.isOpen())
+                .note(request.getNote())
+                .build();
+
+        List<TimeSlotTemplate> selectedTimeSlots = selectedTimeSlots(request);
+        for (TimeSlotTemplate template : selectedTimeSlots) {
+            WorkshopTimeSlot slot = WorkshopTimeSlot.builder()
+                    .schedule(schedule)
+                    .startTime(template.startTime())
+                    .endTime(template.endTime())
+                    .capacity(request.getCapacity())
+                    .reservedCount(0)
+                    .active(true)
+                    .build();
+            schedule.getTimeSlots().add(slot);
+        }
+        return schedule;
+    }
+
+    private List<TimeSlotTemplate> selectedTimeSlots(ScheduleCreateRequest request) {
+        List<TimeSlotTemplate> selectedTimeSlots = new ArrayList<>();
+        List<Integer> selectedIndexes = request.selectedTimeSlotIndexes();
+        for (int index = 0; index < DEFAULT_TIME_SLOTS.size(); index++) {
+            if (selectedIndexes.contains(index)) {
+                selectedTimeSlots.add(DEFAULT_TIME_SLOTS.get(index));
+            }
+        }
+        return selectedTimeSlots;
+    }
+
+    private void validateTimeRange(LocalTime startTime, LocalTime endTime) {
         if (!endTime.isAfter(startTime)) {
             throw new BusinessException("終了時刻は開始時刻より後にしてください");
         }
+    }
+
+    private record TimeSlotTemplate(LocalTime startTime, LocalTime endTime) {
     }
 }

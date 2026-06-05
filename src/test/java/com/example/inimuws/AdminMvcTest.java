@@ -54,6 +54,23 @@ class AdminMvcTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("INQ-260502-01")))
                 .andExpect(content().string(containsString("問い合わせ管理ページへ戻る")));
+        mockMvc.perform(get("/admin/schedules").param("month", "2026-06"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("開催日作成")))
+                .andExpect(content().string(containsString("各日編集")))
+                .andExpect(content().string(containsString("1枠")))
+                .andExpect(content().string(containsString("2枠")))
+                .andExpect(content().string(containsString("3枠")))
+                .andExpect(content().string(containsString("祝日")))
+                .andExpect(content().string(containsString("予約数")))
+                .andExpect(content().string(containsString("ステータス")))
+                .andExpect(content().string(containsString("<th>更新</th>")))
+                .andExpect(content().string(containsString("定員：")))
+                .andExpect(content().string(containsString("□受付")))
+                .andExpect(content().string(containsString("（10）")))
+                .andExpect(content().string(containsString("残:")))
+                .andExpect(content().string(containsString("詳細")))
+                .andExpect(content().string(containsString("data-schedule-target=\"schedule-2026-06-07\"")));
 
         mockMvc.perform(get("/admin/reservations/code").param("date", "2026-06-13"))
                 .andExpect(status().isOk())

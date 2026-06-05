@@ -9,7 +9,7 @@ VALUES
 INSERT INTO workshop_schedules (schedule_date, is_open, note, created_at, updated_at)
 SELECT calendar_days.d,
        TRUE,
-       CASE WHEN holiday_dates.d IS NOT NULL THEN '祝日開催' ELSE '土日開催' END,
+       CASE WHEN holiday_dates.d IS NOT NULL THEN '祝日開催' ELSE NULL END,
        CURRENT_TIMESTAMP,
        CURRENT_TIMESTAMP
 FROM (
