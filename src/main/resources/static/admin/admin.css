@@ -1474,16 +1474,20 @@ button.secondary:hover {
   padding: 13px 14px;
 }
 
-.schedule-side-form > button,
-.schedule-side-form > .schedule-side-note {
+.schedule-side-form > button {
   border-top: 1px solid var(--border-soft);
 }
 
 .schedule-side-form > button {
-  display: block;
+  align-items: center;
+  display: inline-flex;
+  height: 40px;
+  justify-content: center;
+  justify-self: start;
+  margin-left: 14px;
   min-height: 40px;
   padding: 9px 16px;
-  width: 100%;
+  width: calc((100% - 28px) / 3);
 }
 
 .schedule-side-open-check {
